@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虚拟dom</title>
+    <script src="../../dist/vue.js"></script>
+</head>
+<body>
+    <div id="demo">
+        <h1>虚拟dom</h1>
+        <p :title="title">{{foo}}</p>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#demo',
+            data: {
+                foo: 'foo',
+                title: 'oldTitle'
+            },
+            mounted() {
+                setTimeout(() => {
+                    this.foo = 'fooooooo'
+                    this.title = 'newTitle'
+                }, 1000);
+            }
+        })
+    </script>
+</body>
+</html>

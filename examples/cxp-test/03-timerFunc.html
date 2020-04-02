@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>异步更新</title>
+    <script src="../../dist/vue.js"></script>
+</head>
+<body>
+    <div id="demo">
+        <h1> 异步更新</h1>
+        <p id="p1" title="foo">{{foo}}</p>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#demo',
+            data: {
+                foo: 'Ready~'
+            },
+            mounted() {
+                this.foo = Math.random()
+                console.log('1:' + this.foo)
+                this.foo = Math.random()
+                console.log('2:' + this.foo)
+                this.foo = Math.random()
+                console.log('3:' + this.foo)
+                // 异步行为，此时浏览器还未刷新，模板上数据未变
+                console.log('p1.innerHTML:' + p1.innerHTML)
+
+                this.$nextTick(() => { /** callback是在微任务执行完 dom刷新前执行的 */
+                    // 这里才是最新的值
+                    console.log('p1.innerHTML:' + p1.innerHTML)
+                })
+            }
+        })
+    </script>
+</body>
+</html>

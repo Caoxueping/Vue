@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue源码剖析</title>
+    <script src="../../dist/vue.js"></script>
+</head>
+<body>
+    <div id="demo">
+        <h1>数据响应化</h1>
+        <p>{{obj.foo}}</p>
+        <p>{{test}}</p>
+        <p>{{change}}</p>
+    </div>
+
+    <script> 
+        // 创建实例
+        // 会有几个Observe？ 几个Dep？ 几个Watcher？
+         //        2           4           1
+        /** 只要出现一个对象，就会出现一个ob */
+        /** 每个key都有一个dep */
+        /** 每个组件一个Watcher */
+        const app = new Vue({
+            el: '#demo',
+            data: {
+                obj: {foo:'foo'},
+                test: 'one',
+                change: 'two'
+            },
+            mounted() {
+                setTimeout(() => {
+                    this.obj.foo = 'fooooooo'
+                    this.test = 'oneeeeeeeeeee'
+                    this.change = 'twooooooooooo'
+                }, 1000);
+            }
+        })
+    </script>
+</body>
+</html>
