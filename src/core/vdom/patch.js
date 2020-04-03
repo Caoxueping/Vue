@@ -74,9 +74,12 @@ export function createPatchFunction (backend) {
   const { modules, nodeOps } = backend
 
   for (i = 0; i < hooks.length; ++i) {
+    // cb['creat'] = []
     cbs[hooks[i]] = []
     for (j = 0; j < modules.length; ++j) {
+      // 如果传进来的modeles内存在相应钩子
       if (isDef(modules[j][hooks[i]])) {
+        // cbs['create'] = [attrFn, classFn]
         cbs[hooks[i]].push(modules[j][hooks[i]])
       }
     }
@@ -563,7 +566,9 @@ export function createPatchFunction (backend) {
     const ch = vnode.children
 
     // 属性更新
+    // 存在需要更新的attr class style 等
     if (isDef(data) && isPatchable(vnode)) {
+      // 循环cbs中关于属性更新的数组，循环比较执行
       for (i = 0; i < cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)
       if (isDef(i = data.hook) && isDef(i = i.update)) i(oldVnode, vnode)
     }
