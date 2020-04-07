@@ -8,6 +8,7 @@ export function initAssetRegisters (Vue: GlobalAPI) {
    * Create asset registration methods.
    */
   ASSET_TYPES.forEach(type => {
+    // Vue.component = function() {}
     Vue[type] = function (
       id: string,
       definition: Function | Object
@@ -19,13 +20,17 @@ export function initAssetRegisters (Vue: GlobalAPI) {
         if (process.env.NODE_ENV !== 'production' && type === 'component') {
           validateComponentName(id)
         }
+        // definition是组件配置对象
         if (type === 'component' && isPlainObject(definition)) {
           definition.name = definition.name || id
+          // this.options._base.extend => Vue.extend, 生成组件构造函数
           definition = this.options._base.extend(definition)
         }
         if (type === 'directive' && typeof definition === 'function') {
           definition = { bind: definition, update: definition }
         }
+        // options.components = constructor
+        // 其他组件初始化时会选项合并， 此时这里声明的内容就会出现在自定义组件中
         this.options[type + 's'][id] = definition
         return definition
       }

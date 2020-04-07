@@ -34,7 +34,9 @@ import {
 
 // inline hooks to be invoked on component VNodes during patch
 const componentVNodeHooks = {
+  // 初始化： 实例化 挂载
   init (vnode: VNodeWithData, hydrating: boolean): ?boolean {
+    // 首先判断实例是否存在，如果是keep-alive实例没有销毁
     if (
       vnode.componentInstance &&
       !vnode.componentInstance._isDestroyed &&
@@ -44,6 +46,7 @@ const componentVNodeHooks = {
       const mountedNode: any = vnode // work around flow
       componentVNodeHooks.prepatch(mountedNode, mountedNode)
     } else {
+      // 创建组件实例并挂载
       const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
         activeInstance
@@ -183,6 +186,7 @@ export function createComponent (
   }
 
   // install component management hooks onto the placeholder node
+  // 安装组件钩子函数
   installComponentHooks(data)
 
   // return a placeholder vnode
@@ -224,7 +228,9 @@ export function createComponentInstanceForVnode (
 }
 
 function installComponentHooks (data: VNodeData) {
+  // 查找data中是否存在钩子
   const hooks = data.hook || (data.hook = {})
+  // hooksToMerge 默认钩子
   for (let i = 0; i < hooksToMerge.length; i++) {
     const key = hooksToMerge[i]
     const existing = hooks[key]

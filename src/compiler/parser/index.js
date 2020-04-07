@@ -82,18 +82,22 @@ export function parse (
 ): ASTElement | void {
   warn = options.warn || baseWarn
 
+  // 选项预处理
   platformIsPreTag = options.isPreTag || no
   platformMustUseProp = options.mustUseProp || no
   platformGetTagNamespace = options.getTagNamespace || no
   const isReservedTag = options.isReservedTag || no
   maybeComponent = (el: ASTElement) => !!el.component || !isReservedTag(el.tag)
 
+  // 扩展编译功能
   transforms = pluckModuleFunction(options.modules, 'transformNode')
   preTransforms = pluckModuleFunction(options.modules, 'preTransformNode')
   postTransforms = pluckModuleFunction(options.modules, 'postTransformNode')
 
   delimiters = options.delimiters
 
+  // {{()}}
+  // <div></div>
   const stack = []
   const preserveWhitespace = options.preserveWhitespace !== false
   const whitespaceOption = options.whitespace
@@ -201,6 +205,7 @@ export function parse (
     }
   }
 
+  // 解析html模板
   parseHTML(template, {
     warn,
     expectHTML: options.expectHTML,
@@ -211,6 +216,7 @@ export function parse (
     shouldKeepComment: options.comments,
     outputSourceRange: options.outputSourceRange,
     start (tag, attrs, unary, start, end) {
+      // 遇到开始标签的处理
       // check namespace.
       // inherit parent ns if there is one
       const ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag)
@@ -221,6 +227,7 @@ export function parse (
         attrs = guardIESVGBug(attrs)
       }
 
+      // 创建AST
       let element: ASTElement = createASTElement(tag, attrs, currentParent)
       if (ns) {
         element.ns = ns
@@ -277,6 +284,7 @@ export function parse (
         processRawAttrs(element)
       } else if (!element.processed) {
         // structural directives
+        /** 处理结构性指令 */
         processFor(element)
         processIf(element)
         processOnce(element)
@@ -289,6 +297,9 @@ export function parse (
         }
       }
 
+      /**template下 最外层只能有一个div的原因：最外层必须是一个div，才是一个完整的dom树，才能方便遍历， stack才能正确配对
+       * 
+       */
       if (!unary) {
         currentParent = element
         stack.push(element)
